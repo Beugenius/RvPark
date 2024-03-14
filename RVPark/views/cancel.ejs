@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Cancel Reservation</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="font/bootstrap-icons.css" />
+	</head>
+	<body>
+		<main class="container-fluid rounded d-flex justify-content-center col-md-6 shadow-lg p-5 mt-5">
+			<form class="text-center col-md-12" id="confirm_cancel" action="/cancel" method="post">
+                <h3 class="mb-3 fw-normal">Cancel Reservation</h3>
+                <!-- error messages -->
+                <div>
+                    <p id="message" class="text-danger"><%- locals.message %></p>
+                </div>
+                <!-- later will use info from POST and DB -->
+                <!-- site -->
+                <p><%- locals.siteName %></p>
+                <!-- dates -->
+                <p>Dates: <%- locals.startDate %> - <%- locals.endDate %></p>
+                <!-- charges -->
+                <p>Amount paid: $<%- locals.amountPaid %></p>
+                <p>Cancellation fee: $<%- locals.cancellationFee %></p>
+                <p>Amount to be refunded: $<%- locals.refundAmount %></p>
+                <!-- terms and conditions -->
+                
+                
+                <div class="form-check text-start my-3">
+                    <input type="checkbox" class="form-check-input" id="agreement">
+                    <label for="agreement" class="form-check-label">I understand that if I cancel this reservation, I will not receive a full refund. <em>(Cancellation fees vary. See <a>info page</a> for details.)</em></label>
+                </div>
+                <!-- button simulates refund for now -->
+                <input type="hidden" name="completeCancellation" value="true" />
+                <input type="hidden" name="reservationId" value="<%- locals.reservationId %>" />
+                <input type="hidden" name="refundAmt" value="<%- locals.refundAmount %>" />
+                <button class="btn btn-primary" type="submit">Cancel</button>
+                <button class="btn btn-outline-primary" type="button" onclick="window.location.href='/reservations'">Return</button>
+            </form>
+		</main>
+	</body>
+</html>

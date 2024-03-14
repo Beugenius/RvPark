@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE-edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Information</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="font/bootstrap-icons.css" />
+		<script lang="javascript" src="js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<%- include('nav'); %>
+		<main class="px-3">
+			<h3>FamCamp Information</h3>
+			<div class="accordion" id="accordionGroup">
+				<div class="accordion-item">
+					<h4 class="accordion-header">
+						<button
+							class="accordion-button collapsed"
+							type="button"
+							data-bs-toggle="collapse"
+							data-bs-target="#campMap"
+							aria-expanded="false"
+							aria-controls="campMap">
+							Map
+						</button>
+					</h4>
+					<div id="campMap" class="accordion-collapse collapse" data-bs-parent="#accordionGroup">
+						<div class="accordion-body">
+							<img
+								class="img-fluid mb-4"
+								loading="lazy"
+								src="/images/famcamp-map.png"
+								alt="simplified map of the campground, showing all available sites, buildings, and roads" />
+						</div>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h4 class="accordion-header">
+						<button
+							class="accordion-button collapsed"
+							type="button"
+							data-bs-toggle="collapse"
+							data-bs-target="#times"
+							aria-expanded="false"
+							aria-controls="times">
+							Times
+						</button>
+					</h4>
+					<div id="times" class="accordion-collapse collapse" data-bs-parent="#accordionGroup">
+						<div class="accordion-body">
+							<p>Check-in is after 1300</p>
+							<p>Check-out is by 1200</p>
+							<p>
+								Quiet hours are 2200 - 0800<br />
+								<em>* Generator use is not permitted during quiet hours.</em>
+							</p>
+							<p>
+								Office hours are Monday - Friday, 0800 - 1600<br />
+								<em>* A Camp Host is posted in site 15 at all times</em>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h4 class="accordion-header">
+						<button
+							class="accordion-button collapsed"
+							type="button"
+							data-bs-toggle="collapse"
+							data-bs-target="#amenities"
+							aria-expanded="false"
+							aria-controls="amenities">
+							On-site Amenities
+						</button>
+					</h4>
+					<div id="amenities" class="accordion-collapse collapse" data-bs-parent="#accordionGroup">
+						<div class="accordion-body">
+							<p>
+								<b>Rec Room:</b> Features include microwave, dining area, TV lounge, study room, and
+								book exchange. WiFi is available in or near the building. Stop by the office to
+								check out our free DVD rentals.
+							</p>
+							<p>
+								<b>Laundry:</b> Machines cost $1 per cycle and a coin machine is available in the
+								laundry room. Please do not launder pet bedding or heavily soiled items in the these
+								machines.
+							</p>
+							<p>
+								<b>Ice:</b> Available in the laundry room free of charge. Please refrain from
+								filling large ice chests.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h4 class="accordion-header">
+						<button
+							class="accordion-button collapsed"
+							type="button"
+							data-bs-toggle="collapse"
+							data-bs-target="#payments"
+							aria-expanded="false"
+							aria-controls="payments">
+							Payments
+						</button>
+					</h4>
+					<div id="payments" class="accordion-collapse collapse" data-bs-parent="#accordionGroup">
+						<div class="accordion-body">
+							Payments can be made in the following ways:
+							<ul>
+								<li>Online, by credit card</li>
+								<li>In the office during regular hours, by credit card or cash</li>
+								<li>After hours at the check-in booth next to the office, cash only</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h4 class="accordion-header">
+						<button
+							class="accordion-button collapsed"
+							type="button"
+							data-bs-toggle="collapse"
+							data-bs-target="#reservations"
+							aria-expanded="false"
+							aria-controls="reservations">
+							Reservations
+						</button>
+					</h4>
+					<div
+						id="reservations"
+						class="accordion-collapse collapse"
+						data-bs-parent="#accordionGroup">
+						<div class="accordion-body">
+							<p>
+								Reservations can be made up to 6 months in advance and must be paid in full at time
+								of reservation.
+							</p>
+							<p>
+								Cancellations made at least 3 days before arrival will be charged a $10 fee.
+								Cancellations made less than 3 days prior, and cancellations for holidays or special
+								events, will be charged a 1-day fee.
+							</p>
+							<p>
+								Maximum length of stay April-October is 14 consecutive days, except for those
+								traveling on PCS orders. Long term stays are allowed October 15th to April 1st. For
+								detailed information, please contact the FamCamp office.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h4 class="accordion-header">
+						<button
+							class="accordion-button collapsed"
+							type="button"
+							data-bs-toggle="collapse"
+							data-bs-target="#guidelines"
+							aria-expanded="false"
+							aria-controls="guidelines">
+							Guidelines
+						</button>
+					</h4>
+					<div id="guidelines" class="accordion-collapse collapse" data-bs-parent="#accordionGroup">
+						<div class="accordion-body">
+							In an effort to ensure compliance with all public health and safety requirements, RVs
+							are subject to inspection when conditions observed from the exterior of the RV suggest
+							a potential hazard or substandard condition exists within the unit. In the event of an
+							inspection, all RV units must be able to demonstrate the following:
+							<ul>
+								<li>
+									Proper connection to the park's fresh water system using the unit's exterior water
+									connection. The fresh water connector on the unit should be inspected to ensure it
+									is leak-free and made of a material approved for potable water
+								</li>
+								<li>
+									Power cord and/or approved adapter is approved for RV use and maintained in a safe
+									operating condition.
+								</li>
+								<li>
+									The sewer drain connection on the unit must be gas tight and leak free. Hose must
+									be constructed of minimum schedule 40 ABS plastic approved for drain and waste.
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h4 class="accordion-header">
+						<button
+							class="accordion-button collapsed"
+							type="button"
+							data-bs-toggle="collapse"
+							data-bs-target="#pets"
+							aria-expanded="false"
+							aria-controls="pets">
+							Pets
+						</button>
+					</h4>
+					<div id="pets" class="accordion-collapse collapse" data-bs-parent="#accordionGroup">
+						<div class="accordion-body">
+							Leashed and vaccinated pets are welcome, provided pet owners adhere to the following
+							installation requirements:
+							<ul>
+								<li>Animal waste will be picked up and properly disposed of immediately.</li>
+								<li>
+									Pets will remain on a leash in control of the owner unless in the designated dog
+									park area.
+								</li>
+								<li>When using the dog park, the pet owner must be present at all times.</li>
+								<li>Dogs will not be chained outdoors or left unattended at any time.</li>
+								<li>
+									In consideration of other guests, nuisance pet behavior will not be permitted.
+									This includes but is not limited to pets that display aggression and/or excessive
+									barking.
+								</li>
+								<li>Two (2) pet maximum.</li>
+								<li>
+									Dogs with any of the following breed lineage are restricted from FamCamp: Pit
+									bulls, Staffordshire Terriers, Rottweilers, Chow Chows, Doberman Pinschers, wolf
+									hybrids.
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h4 class="accordion-header">
+						<button
+							class="accordion-button collapsed"
+							type="button"
+							data-bs-toggle="collapse"
+							data-bs-target="#parking"
+							aria-expanded="false"
+							aria-controls="parking">
+							Parking
+						</button>
+					</h4>
+					<div id="parking" class="accordion-collapse collapse" data-bs-parent="#accordionGroup">
+						<div class="accordion-body">
+							<p>
+								Vehicles are only allowed to park in assigned spaces. Parking on vacant sites or
+								roadways is not authorized. Please see Camp Host or Staff for information on
+								overflow parking and visitor areas. Parking on grass is not permitted.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</body>
+</html>

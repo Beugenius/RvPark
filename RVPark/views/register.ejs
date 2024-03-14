@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>New Account</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="font/bootstrap-icons.css" />
+        <script type="text/javascript" src="crypto-js.js"></script>
+
+        <script>
+            function checkPasswordAndRules(event) {
+              // Get the two passwords entered
+              const password1 = document.getElementById("password1").value;
+              const password2 = document.getElementById("password2").value;
+              const agreedToTerms = document.getElementById("agreement").checked;
+              let passwordValid = false;
+              let message = "";
+              
+              // Make sure passwords match
+              if(password1 == "") {
+                message = "Please enter password";
+              } else if (password2 == ""){
+                message = "Please re-enter password";
+              } else if (password1 != password2) {
+                message = "Passwords didn't match";
+              } else {
+                passwordValid = true;
+              }
+
+              // Make sure agreement checkbox is checked
+              if(!agreedToTerms){
+                message = "Please agree to abide by the rules and regulations";
+                passwordValid = false;
+              }
+
+              if(!passwordValid){
+                document.getElementById("message").innerHTML = message;
+                event.preventDefault();
+              } else {
+                let salt = CryptoJS.lib.WordArray.random(8);
+                document.getElementById("salt").value = salt;
+                let hashedPassword = CryptoJS.SHA256(password1 + ":" + salt).toString(CryptoJS.enc.Hex);
+                document.getElementById("hashedPassword").value = hashedPassword;
+              }
+              
+            }
+            function checkedAgreement() {
+              const agreed = document.getElementById("agreement");
+              const submitButton = document.getElementById("submitBtn");
+              if (agreed.checked){
+                submitButton.disabled = "";
+              } else {
+                submitButton.disabled = "disabled";
+              }
+            }
+          </script>
+        
+	</head>
+	
+    <body>
+		<main class="container-fluid rounded d-flex justify-content-center col-md-6 shadow-lg p-5 mt-5">
+			<form onSubmit="return checkPasswordAndRules(event);" method="post" class="text-center col-md-12">
+                <h3 class="mb-3 fw-normal">Create New Account</h3>
+                <!-- error messages -->
+                <div>
+                    <p id="message" class="text-danger"><%- locals.message %></p>
+                </div>
+                <!-- email -->
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+                    <label for="email">Email</label>
+                </div>
+                <!-- phone -->
+                <div class="form-floating">
+                  <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone">
+                  <label for="phone">Phone</label>
+              </div>
+                <!-- password -->
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="password1" placeholder="Password">
+                    <label for="password1">Password</label>
+                </div>
+                <!-- re-enter password -->
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="password2" placeholder="Password">
+                    <label for="password2">Re-enter password</label>
+                </div>
+                <!-- first name -->
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name">
+                    <label for="firstname">First Name</label>
+                </div>
+                <!-- last name -->
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Last Name">
+                    <label for="lastname">Last Name</label>
+                </div>
+                <!-- rank (if applicable) -->
+                <div class="form-floating">
+                  <select class="form-control" id="rank" name="rank">
+                    <option value="" selected disabled>Rank</option>
+                    <option value="E-1">E-1</option>
+                    <option value="E-2">E-2</option>
+                    <option value="E-3">E-3</option>
+                    <option value="E-4">E-4</option>
+                    <option value="E-5">E-5</option>
+                    <option value="E-6">E-6</option>
+                    <option value="E-7">E-7</option>
+                    <option value="E-8">E-8</option>
+                    <option value="E-9">E-9</option>
+                    <option value="O-1">O-1</option>
+                    <option value="O-2">O-2</option>
+                    <option value="O-3">O-3</option>
+                    <option value="O-4">O-4</option>
+                    <option value="O-5">O-5</option>
+                    <option value="O-6">O-6</option>
+                    <option value="O-7">O-7</option>
+                    <option value="O-8">O-8</option>
+                    <option value="O-9">O-9</option>
+                  </select>
+                  <label for="rank">Rank</label>
+                </div>
+                <!-- affiliation (army, navy, etc.) -->
+                <div class="form-floating">
+                  <select class="form-control" id="affiliation" name="affiliation">
+                    <option value="" selected disabled>Affiliation</option>
+                    <option value="AirForce">Air Force</option>
+                    <option value="Army">Army</option>
+                    <option value="CoastGuard">Coast Guard</option>
+                    <option value="MarineCorps">Marine Corps</option>
+                    <option value="Navy">Navy</option>
+                    <option value="SpaceForce">Space Force</option>
+                    <option value="Retired">Retired</option>
+                  </select>
+                  <label for="affiliation">Affiliation</label>
+                </div>
+                <!-- permanent change of station -->
+                <div class="form-floating">
+                  <p style="text-align: left;" for="pcs">Permanent Change of Station</p>
+                  <div class="radio-buttons" style="text-align: left;">
+                    <input type="radio" id="yes-pcs" name="pcs"  value="1">
+                    <label for="yes-pcs">Yes</label>
+
+                    <input type="radio" id="no_pcs" name="pcs"  value="0" checked>
+                    <label for="no_pcs">No</label>
+                  </div>
+                </div>
+                <!-- phone -->
+                <!-- <div class="form-floating">
+                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="801-555-0199">
+                    <label for="phone">Phone</label>
+                </div> -->
+                <!-- terms and conditions -->
+                <div class="form-check text-start my-3">
+                    <input type="checkbox" class="form-check-input" id="agreement" onchange="checkedAgreement()">
+                    <label for="agreement" class="form-check-label">I agree to abide by the rules and regulations as explained on the <a href="/info">info page</a>.</label>
+                </div>
+                <!-- hidden fields for hash & salt -->
+                <input type="hidden" id="hashedPassword" name="hashedPassword" />
+                <input type="hidden" id="salt" name="salt" />
+                <!-- button simulates login for now, later will initiate verification script -->
+                <button id="submitBtn" class="btn btn-primary" type="submit" disabled="disabled">Submit</button>
+                <button class="btn btn-outline-primary" type="button" onclick="window.location.href='/'">Cancel</button>
+            </form>
+		</main>
+	</body>
+</html>

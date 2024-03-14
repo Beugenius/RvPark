@@ -1,0 +1,28 @@
+{
+  "name": "rvpark",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "@18f/us-federal-holidays": "^4.0.0",
+    "@sendgrid/mail": "^6.5.5",
+    "bootstrap": "^5.3.2",
+    "bootstrap-icons": "^1.11.1",
+    "cookie-parser": "~1.4.4",
+    "crypto-js": "^4.2.0",
+    "debug": "~2.6.9",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-mysql-session": "^3.0.0",
+    "express-session": "^1.17.3",
+    "http-errors": "~1.6.3",
+    "icons": "^1.0.0",
+    "morgan": "~1.9.1",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.6.2",
+    "uuid": "^9.0.1"
+  }
+}

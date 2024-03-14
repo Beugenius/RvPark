@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE-edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Reserve Site</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="font/bootstrap-icons.css" />
+		<script>
+			function cashSwitch(which) {
+				if (which == 1) {
+					document.getElementById("cashCreditSelected").value = "1";
+					document.getElementById("creditcard").disabled = false;
+					document.getElementById("fullname").disabled = false;
+					document.getElementById("expiration").disabled = false;
+					document.getElementById("cvv").disabled = false;
+				} else if (which == 2) {
+					document.getElementById("cashCreditSelected").value = "2";
+					document.getElementById("creditcard").disabled = true;
+					document.getElementById("fullname").disabled = true;
+					document.getElementById("expiration").disabled = true;
+					document.getElementById("cvv").disabled = true;
+				}
+			}
+
+			function formatNumberEntries(event, id) {
+				if (event.key !== "Backspace" && event.key !== "Tab" && event.key !== "Control") {
+					if (
+						(event.keyCode >= 48 && event.keyCode <= 57) ||
+						(event.keyCode >= 96 && event.keyCode <= 105)
+					) {
+						if (id == "creditcard") {
+							let ccInput = document.getElementById("creditcard");
+							if (
+								ccInput.value.length == 4 ||
+								ccInput.value.length == 9 ||
+								ccInput.value.length == 14
+							) {
+								ccInput.value = ccInput.value + " ";
+							}
+						}
+					} else {
+						event.preventDefault();
+					}
+				}
+			}
+
+			function validateForm(event) {
+				let creditCard = document.getElementById("creditcard").value.replaceAll(" ", "");
+				let nameOnCard = document.getElementById("fullname").value;
+				let expirationDate = document.getElementById("expiration").value;
+				let cvv = document.getElementById("cvv").value;
+				let agreement1Checked = document.getElementById("agreement1").checked;
+				let agreement2Checked = document.getElementById("agreement2").checked;
+				let message = "";
+				if (creditCard.length != 16) {
+					message += "Invalid credit card number\n";
+				}
+				if (nameOnCard.split(" ").length < 2) {
+					message += "Please enter full name\n";
+				}
+				if (cvv.length < 3) {
+					message += "Invalid CVV\n";
+				}
+				if (
+					expirationDate <
+					new Date().getFullYear().toString() + "-" + (new Date().getMonth() + 1).toString()
+				) {
+					message += "Invalid expiration date\n";
+				}
+				if (!agreement1Checked || !agreement2Checked) {
+					message += "Must agree to amount charged and cancellation policy";
+				}
+				if (message != "") {
+					document.getElementById("message").innerHTML = message;
+					event.preventDefault();
+				} else {
+					// nothing, form is validated
+				}
+			}
+
+			function validateAdminForm(event) {
+				let creditAsPayment = document.getElementById("cashCreditSelected").value == "1";
+				let creditCard = document.getElementById("creditcard").value.replaceAll(" ", "");
+				let nameOnCard = document.getElementById("fullname").value;
+				let expirationDate = document.getElementById("expiration").value;
+				let cvv = document.getElementById("cvv").value;
+				let agreementChecked = document.getElementById("agreement").checked;
+				let userEmail = document.getElementById("email").value;
+				let firstName = document.getElementById("firstName").value;
+				let lastName = document.getElementById("lastName").value;
+				let message = "";
+				if (userEmail != "") {
+					let lettersBeforeAt = userEmail.split("@")[0];
+					let lettersAfterAt = userEmail.split("@")[1];
+					let lettersBetweenAtAndPeriod = userEmail.split("@")[1].split(".")[0];
+					let lettersAfterPeriod = userEmail.split("@")[1].split(".")[1];
+					if (
+						lettersBeforeAt == "" ||
+						lettersAfterAt == "" ||
+						lettersBetweenAtAndPeriod == "" ||
+						lettersAfterPeriod == ""
+					) {
+						message += "'" + userEmail + "' is an invalid email\n";
+					}
+				} else {
+					message += "Please enter customer's email\n";
+				}
+				if (firstName == "" || lastName == "") {
+					message += "Please enter customer's first and last name\n";
+				}
+				if (creditAsPayment && creditCard.length != 16) {
+					message += "Invalid credit card number\n";
+				}
+				if (creditAsPayment && nameOnCard.split(" ").length < 2) {
+					message += "Please enter full name\n";
+				}
+				if (creditAsPayment && cvv.length < 3) {
+					message += "Invalid CVV\n";
+				}
+				if (
+					creditAsPayment &&
+					expirationDate <
+						new Date().getFullYear().toString() + "-" + (new Date().getMonth() + 1).toString()
+				) {
+					message += "Invalid expiration date\n";
+				}
+				if (!agreementChecked) {
+					message += "Customer must agree to amount charged and cancellation policy";
+				}
+				if (message != "") {
+					document.getElementById("message").innerHTML = message;
+					event.preventDefault();
+				} else {
+					// nothing, form is validated
+				}
+			}
+		</script>
+	</head>
+
+	<body>
+		<main class="container-fluid rounded d-flex justify-content-center col-md-6 shadow-lg p-5 mt-5">
+			<% if (!locals.datesValid) { %>
+			<div class="text-danger">
+				There was an issue with your selected dates. Possibilities include:
+				<ul>
+					<li>Booking more than 14 days at a time (restricted April-October)</li>
+					<li>Booking multiple reservations within too short a time</li>
+					<li>Booking more than 6 months in advance</li>
+				</ul>
+				Please read the rules on the Info page, or contact an administrator.<br />
+				<button
+					class="btn btn-primary"
+					type="button"
+					onclick="window.location.href='/availability'">
+					Go Back
+				</button>
+			</div>
+			<% } else if(locals.role == "customer" ) { %>
+			<form class="text-center col-md-12" onsubmit="return validateForm(event)" method="post">
+				<h3 class="mb-3 fw-normal">Reserve Site</h3>
+				<!-- error messages -->
+				<div>
+					<p id="message" class="text-danger" style="white-space: pre-wrap">
+						<%- locals.message %>
+					</p>
+				</div>
+				<!-- site -->
+				<p><%- locals.site.site_name %></p>
+				<!-- dates -->
+				<p>Dates: <%- locals.formattedStartDate %> - <%- locals.formattedEndDate %></p>
+				<!-- charge -->
+				<p>$<%- locals.totalCost %>.00</p>
+				<h4 class="mb-2">Payment Info</h4>
+				<!-- credit card -->
+				<div class="form-floating">
+					<input
+						type="text"
+						class="form-control"
+						id="creditcard"
+						placeholder="Credit card number"
+						maxlength="19"
+						minlength="19"
+						onkeydown="formatNumberEntries(event, 'creditcard')" />
+					<label for="creditcard">Credit card number</label>
+				</div>
+				<!-- name -->
+				<div class="form-floating">
+					<input
+						type="text"
+						class="form-control"
+						id="fullname"
+						name="fullname"
+						placeholder="Name on card"
+						maxlength="101" />
+					<label for="fullname">Name on card</label>
+				</div>
+				<div class="d-flex">
+					<!-- expiration -->
+					<div class="form-floating col-sm-6">
+						<input
+							type="month"
+							class="form-control"
+							id="expiration"
+							name="expiration"
+							min="<%-locals.todaysDateString%>"
+							value="<%-locals.todaysDateString%>"
+							placeholder="Expiration date" />
+						<label for="expiration">Expiration date</label>
+					</div>
+					<!-- CVV -->
+					<div class="form-floating col-sm-6">
+						<input
+							type="text"
+							class="form-control"
+							id="cvv"
+							name="cvv"
+							placeholder="CVV"
+							onkeydown="formatNumberEntries(event, 'cvv')"
+							maxlength="4"
+							minlength="3" />
+						<label for="cvv">CVV</label>
+					</div>
+				</div>
+				<!-- terms and conditions -->
+				<div class="form-check text-start my-3">
+					<input type="checkbox" class="form-check-input" id="agreement1" />
+					<label for="agreement1" class="form-check-label"
+						>I agree to have my credit card charged for the specified amount.</label
+					>
+				</div>
+				<div class="form-check text-start my-3">
+					<input type="checkbox" class="form-check-input" id="agreement2" />
+					<label for="agreement2" class="form-check-label"
+						>I understand that if I cancel this reservation, I will not receive a full refund.
+						<em>(Cancellation fees vary. See <a>info page</a> for details.)</em></label
+					>
+				</div>
+				<!-- hidden fields for hash & salt -->
+				<input type="hidden" id="hashedCreditCard" name="hashedCreditCard" />
+				<input type="hidden" id="salt" name="salt" />
+				<input type="hidden" id="isPayment" name="isPayment" value="true" />
+				<input type="hidden" name="totalCost" value="<%-locals.totalCost%>" />
+				<input type="hidden" name="siteId" value="<%- locals.site.site_id %>" />
+				<input type="hidden" name="startDate" value="<%- locals.startDate %>" />
+				<input type="hidden" name="endDate" value="<%- locals.endDate %>" />
+				<input type="hidden" name="siteName" value="<%- locals.site.site_name %>" />
+				<input type="hidden" name="totalDays" value="<%- locals.totalDays%>" />
+				<!-- button simulates payment for now -->
+				<button class="btn btn-primary" type="submit">Submit</button>
+				<button
+					class="btn btn-outline-primary"
+					type="button"
+					onclick="window.location.href='/availability'">
+					Cancel
+				</button>
+			</form>
+			<% } else { %>
+			<form class="text-center col-md-12" onsubmit="return validateAdminForm(event)" method="post">
+				<h3 class="mb-3 fw-normal">Reserve Site</h3>
+				<!-- error messages -->
+				<div>
+					<p id="message" class="text-danger" style="white-space: pre-wrap">
+						<%- locals.message %>
+					</p>
+				</div>
+				<!-- site -->
+				<p><%- locals.site.site_name %></p>
+				<!-- dates -->
+				<p>Dates: <%- locals.formattedStartDate %> - <%- locals.formattedEndDate %></p>
+				<!-- charge -->
+				<p>$<%- locals.totalCost %>.00</p>
+				<div class="form-floating mb-3">
+					<input
+						type="email"
+						class="form-control"
+						id="email"
+						name="email"
+						placeholder="name@example.com" />
+					<label for="email">For account (email)</label>
+				</div>
+				<div class="d-flex">
+					<!-- expiration -->
+					<div class="form-floating col-sm-6">
+						<input
+							type="text"
+							class="form-control"
+							id="firstName"
+							name="firstName"
+							placeholder="Customer's first name" />
+						<label for="firstName">First Name</label>
+					</div>
+					<!-- CVV -->
+					<div class="form-floating col-sm-6">
+						<input
+							type="text"
+							class="form-control"
+							id="lastName"
+							name="lastName"
+							placeholder="Customer's last name" />
+						<label for="lastName">Last Name</label>
+					</div>
+				</div>
+				<h4 class="mb-2">Payment Info</h4>
+				<div class="d-flex my-2 text-start">
+					<div class="form-check col-sm-6">
+						<input
+							id="creditOption"
+							class="form-check-input"
+							name="paymentMethod"
+							type="radio"
+							checked
+							onchange="cashSwitch(1)" />
+						<label for="creditOption" class="form-check-label">Credit Card</label>
+					</div>
+					<div class="form-check col-sm-6">
+						<input
+							id="cashOption"
+							class="form-check-input"
+							name="paymentMethod"
+							type="radio"
+							onchange="cashSwitch(2)" />
+						<label for="cashOption" class="form-check-label">Cash</label>
+					</div>
+				</div>
+				<!-- credit card -->
+				<div class="form-floating">
+					<input
+						type="text"
+						class="form-control"
+						id="creditcard"
+						placeholder="Credit card number"
+						maxlength="19"
+						minlength="19"
+						onkeydown="formatNumberEntries(event, 'creditcard')" />
+					<label for="creditcard">Credit card number</label>
+				</div>
+				<!-- name -->
+				<div class="form-floating">
+					<input
+						type="text"
+						class="form-control"
+						id="fullname"
+						name="fullname"
+						placeholder="Name on card"
+						maxlength="101" />
+					<label for="fullname">Name on card</label>
+				</div>
+				<div class="d-flex">
+					<!-- expiration -->
+					<div class="form-floating col-sm-6">
+						<input
+							type="month"
+							class="form-control"
+							id="expiration"
+							name="expiration"
+							min="<%-locals.todaysDateString%>"
+							value="<%-locals.todaysDateString%>"
+							placeholder="Expiration date" />
+						<label for="expiration">Expiration date</label>
+					</div>
+					<!-- CVV -->
+					<div class="form-floating col-sm-6">
+						<input
+							type="text"
+							class="form-control"
+							id="cvv"
+							name="cvv"
+							placeholder="CVV"
+							onkeydown="formatNumberEntries(event, 'cvv')"
+							maxlength="4"
+							minlength="3" />
+						<label for="cvv">CVV</label>
+					</div>
+				</div>
+				<!-- terms and conditions -->
+
+				<div class="form-check text-start my-3">
+					<input type="checkbox" class="form-check-input" id="agreement" />
+					<label for="agreement" class="form-check-label"
+						>The customer understands that if they cancel this reservation, they will not receive a
+						full refund.</label
+					>
+				</div>
+				<!-- hidden fields for hash & salt -->
+				<input type="hidden" id="hashedCreditCard" name="hashedCreditCard" />
+				<input type="hidden" id="salt" name="salt" />
+				<input type="hidden" id="isPayment" name="isPayment" value="true" />
+				<input type="hidden" name="totalCost" value="<%-locals.totalCost%>" />
+				<input type="hidden" name="siteId" value="<%- locals.site.site_id %>" />
+				<input type="hidden" name="startDate" value="<%- locals.startDate %>" />
+				<input type="hidden" name="endDate" value="<%- locals.endDate %>" />
+				<input type="hidden" name="siteName" value="<%- locals.site.site_name %>" />
+				<input type="hidden" name="totalDays" value="<%- locals.totalDays%>" />
+				<input type="hidden" id="cashCreditSelected" name="cashOrCredit" value="1" />
+				<!-- button simulates payment for now -->
+				<button class="btn btn-primary" type="submit">Submit</button>
+				<button
+					class="btn btn-outline-primary"
+					type="button"
+					onclick="window.location.href='/availability'">
+					Cancel
+				</button>
+			</form>
+
+			<% } %>
+		</main>
+	</body>
+</html>

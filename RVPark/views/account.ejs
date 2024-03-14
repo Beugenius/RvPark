@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE-edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Account</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="font/bootstrap-icons.css" />
+		<script lang="javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="crypto-js.js"></script>
+		<script>
+			function validatePassword(event) {
+				const currentPassword = document.getElementById("currentpassword").value;
+				let passMessageElement = document.getElementById("passwordMessage");
+				if (currentPassword !== "") {
+					const password1 = document.getElementById("password1").value;
+					const password2 = document.getElementById("password2").value;
+					let passwordValid = false;
+					let message = "";
+					if (password1 == "") {
+						message = "Please enter password";
+					} else if (password2 == "") {
+						message = "Please re-enter password";
+					} else if (password1 != password2) {
+						message = "Passwords didn't match";
+					} else {
+						passwordValid = true;
+					}
+					if (!passwordValid) {
+						event.preventDefault();
+						passMessageElement.innerHTML = message;
+						passMessageElement.style.display = "block";
+					} else {
+						let salt = document.getElementById("salt").value;
+						let hashed = CryptoJS.SHA256(password1 + ":" + salt).toString(CryptoJS.enc.hex);
+						let currentHash = CryptoJS.SHA256(currentPassword + ":" + salt).toString(
+							CryptoJS.enc.hex
+						);
+						document.getElementById("hash").value = hashed;
+						document.getElementById("currentHash").value = currentHash;
+					}
+				} else {
+					event.preventDefault();
+					passMessageElement.style.display = "block";
+					passMessageElement.innerHTML = "Please enter your current password";
+				}
+			}
+
+			function validateFile(event) {
+				let pcsFileExtension = document.getElementById("pcsFile").value.split(".").slice(-1)[0];
+				if (
+					pcsFileExtension == "jpg" ||
+					pcsFileExtension == "jpeg" ||
+					pcsFileExtension == "pdf" ||
+					pcsFileExtension == "png"
+				) {
+					// do nothing. Let it post
+				} else {
+					var pcsErrorMessage = document.getElementById("pcsMessage");
+					if (pcsErrorMessage != null) {
+						pcsErrorMessage.innerHTML = "Incorrect file type. Must be .jpg, .jpeg, .pdf, or .png!";
+					} else {
+						var accordionElement = document.getElementById("accordionGroup");
+						var mainDivElement = document.getElementById("main-div");
+						var newErrorMessageDiv = document.createElement("div");
+						var newErrorMessage = document.createElement("p");
+						newErrorMessage.classList.add("mx-3");
+						newErrorMessage.classList.add("text-danger");
+						newErrorMessage.innerHTML = "Incorrect file type. Must be .jpg, .jpeg, .pdf, or .png!";
+						newErrorMessageDiv.appendChild(newErrorMessage);
+						mainDivElement.insertBefore(newErrorMessageDiv, accordionElement);
+					}
+					event.preventDefault();
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<%- include('nav'); %>
+		<main class="px-3">
+			<div id="main-div" class="card rounded d-flex justify-content-center m-2">
+				<h3 id="main-header" class="my-3 mx-3">Account</h3>
+				<%if(locals.passwordChangeMessage) { %>
+				<div>
+					<% if(locals.passwordChangeMessage.includes("success")) { %>
+					<p class="mx-3 text-success"><%- locals.passwordChangeMessage %></p>
+					<% } else { %>
+					<p class="mx-3 text-danger"><%- locals.passwordChangeMessage %></p>
+					<% } %>
+				</div>
+				<% } %> <% if (locals.pcsMessage) { %>
+				<div>
+					<% if(locals.pcsMessage.includes("success")) { %>
+					<p id="pcsMessage" class="mx-3 text-success"><%- locals.pcsMessage %></p>
+					<% } else { %>
+					<p class="mx-3 text-danger"><%- locals.pcsMessage %></p>
+					<% } %>
+				</div>
+				<% } %>
+				<div class="accordion" id="accordionGroup">
+					<div class="accordion-item">
+						<h4 class="accordion-header">
+							<button
+								class="accordion-button collapsed"
+								type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#accountInfo"
+								aria-expanded="false"
+								aria-controls="accountInfo">
+								Account Info
+							</button>
+						</h4>
+						<div
+							id="accountInfo"
+							class="accordion-collapse collapse"
+							data-bs-parent="#accordionGroup">
+							<div class="accordion-body">
+								<div class="card">
+									<p class="card-text mx-3 mt-3">
+										Name: <%- locals.userData.first_name %> <%- locals.userData.last_name%>
+									</p>
+									<p class="card-text mx-3">Email: <%- locals.session.email %></p>
+									<p class="card-text mx-3">Military Rank: <%- locals.userData.military_rank %></p>
+									<p class="card-text mx-3">
+										Military Affiliation: <%- locals.userData.military_affiliation %>
+									</p>
+									<% if(locals.userData.permanent_change_of_station == true) { %>
+									<p class="card-text mx-3">PCS: Yes</p>
+									<% } else { %>
+									<p class="card-text mx-3">PCS: No</p>
+									<% } %>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="accordion-item">
+						<h4 class="accordion-header">
+							<button
+								class="accordion-button collapsed"
+								type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#changePassword"
+								aria-expanded="false"
+								aria-controls="changePassword">
+								Change Password
+							</button>
+						</h4>
+						<div
+							id="changePassword"
+							class="accordion-collapse collapse"
+							data-bs-parent="#accordionGroup">
+							<div class="accordion-body">
+								<div class="card">
+									<div class="card-body">
+										<form
+											class="d-flex flex-column"
+											method="post"
+											onsubmit="return validatePassword(event);">
+											<div class="d-flex flex-column justify-content-between">
+												<!--Current Password-->
+												<div class="input-group mb-3">
+													<input
+														id="currentpassword"
+														type="password"
+														class="form-control"
+														placeholder="Enter current password" />
+												</div>
+												<!--New Password-->
+												<div class="input-group mb-3">
+													<input
+														id="password1"
+														type="password"
+														class="form-control"
+														placeholder="Enter new password" />
+												</div>
+												<!--Confirm New Password-->
+												<div class="input-group mb-3">
+													<input
+														id="password2"
+														type="password"
+														class="form-control"
+														placeholder="Re-enter new password" />
+												</div>
+												<div>
+													<p id="passwordMessage" class="text-danger" style="display: none">
+														<%- locals.passwordMessage %>
+													</p>
+												</div>
+												<div class="text-center">
+													<button class="btn btn-primary" type="submit">Change Password</button>
+												</div>
+												<input type="hidden" name="changePassword" value="true" />
+												<input type="hidden" id="hash" name="hash" />
+												<input type="hidden" id="currentHash" name="currentHash" />
+												<input
+													type="hidden"
+													id="salt"
+													name="salt"
+													value="<%- locals.userData.salt %>" />
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<% if(locals.userDocument == null) { %>
+					<div class="accordion-item">
+						<h4 class="accordion-header">
+							<button
+								class="accordion-button collapsed"
+								type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#uploadPcs"
+								aria-expanded="false"
+								aria-controls="uploadPcs">
+								Upload PCS Documentation
+							</button>
+						</h4>
+						<div
+							id="uploadPcs"
+							class="accordion-collapse collapse"
+							data-bs-parent="#accordionGroup">
+							<div class="accordion-body">
+								<div class="card d-flex">
+									<div class="card-body">
+										<form
+											action="/upload"
+											class="d-flex flex-wrap"
+											method="post"
+											enctype="multipart/form-data"
+											onsubmit="return validateFile(event);">
+											<div class="card-text d-flex mt-3">
+												<input id="pcsFile" name="pcsFile" type="file" accept=".pdf, image/*" />
+											</div>
+											<div class="card-text d-flex mt-3 mb-3">
+												<button class="btn btn-primary" type="submit">Upload PCS</button>
+											</div>
+											<input type="hidden" name="uploadPcs" value="true" />
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<% } else { %>
+					<div class="accordion-item">
+						<h4 class="accordion-header">
+							<button
+								class="accordion-button collapsed"
+								type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#userPcs"
+								aria-expanded="false"
+								aria-controls="userPcs">
+								PCS Documentation
+							</button>
+						</h4>
+						<div id="userPcs" class="accordion-collapse collapse" data-bs-parent="#accordionGroup">
+							<div class="accordion-body">
+								<form class="d-flex flex-row justify-content-end" method="post" action="/delete">
+									<button class="btn btn-danger" type="submit"><i class="bi bi-trash" style="font-style: normal;">Delete</i></button>
+									<input type="hidden" name="userDoc" value="<%-locals.userDocument%>">
+								</form>
+								<img
+									class="img-fluid mb-4"
+									loading="lazy"
+									src="/pcs/<%-locals.userDocument%>"
+									alt="Users PCS documentation" />
+							</div>
+						</div>
+					</div>
+					<% } %>
+				</div>
+			</div>
+		</main>
+	</body>
+</html>

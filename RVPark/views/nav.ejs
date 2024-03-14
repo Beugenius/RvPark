@@ -1,0 +1,26 @@
+<header class="d-flex flex-wrap py-3 px-4 mb-4 border-bottom justify-content-center" style="background-color: white;">
+	<ul class="nav col-12 col-md-auto mb-2 mb-md-0 me-md-auto justify-content-center">
+		<li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
+		<li><a href="/availability" class="nav-link px-2 link-secondary">Availability</a></li>
+		<li><a href="/info" class="nav-link px-2 link-secondary">Info</a></li>
+		<% if (locals.session.role == "admin") { %>
+		<li><a href="/admindashboard" class="nav-link px-2 link-secondary">Admin Dashboard</a></li>
+		<% } else { %>
+		<li><a href="/account" class="nav-link px-2 link-secondary">Account</a></li>
+		<% if (locals.session.loggedIn == true) { %>
+		<li><a href="/reservations" class="nav-link px-2 link-secondary">Reservations</a></li>
+		<% } %> <% } %>
+	</ul>
+	<div class="col-md-3 text-end">
+		<!-- will render differently depending on if user is already logged in -->
+		<% if(locals.session.loggedIn == true) { %>
+		<button type="button" class="btn btn-primary" onclick="window.location.href='/logout'">
+			Log Out
+		</button>
+		<% } else { %>
+		<button type="button" class="btn btn-primary" onclick="window.location.href='/login'">
+			Log In
+		</button>
+		<% } %>
+	</div>
+</header>
